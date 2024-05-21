@@ -1,7 +1,10 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users", uniqueConstraints =
@@ -32,9 +35,9 @@ public class User {
                             referencedColumnName = "id"))
     private Collection<Role> roles;
 
-//    @OneToMany(fetch = FetchType.EAGER)
-//    @JoinColumn(table = "")
-//    private
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_houses")
+    private List<House> houses;
 
     public User() {
 
@@ -49,6 +52,15 @@ public class User {
         this.email = email;
         this.password = password;
         this.roles = roles;
+    }
+
+
+    public List<House> getHouses() {
+        return houses;
+    }
+
+    public void setHouses(List<House> houses) {
+        this.houses = houses;
     }
 
     public User(String firstName, String lastName, String email, String password) {

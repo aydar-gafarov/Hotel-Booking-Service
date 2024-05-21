@@ -29,6 +29,16 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
     public User save(UserRegistrationDto userRegistrationDto) {
         User user = new User(userRegistrationDto.getFirstName(),
                 userRegistrationDto.getLastName(),
@@ -43,7 +53,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-    @Override
+//    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
         if (user == null) {

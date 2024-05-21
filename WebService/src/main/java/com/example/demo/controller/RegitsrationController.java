@@ -39,7 +39,7 @@ public class RegitsrationController {
             System.out.println(e);
             return "registration";
         }
-        return "login";
+        return "redirect:/login";
     }
 
 

@@ -40,8 +40,18 @@
 <br><br><br><br>
 <div class="container">
     <div class="alert alert-success">
+        <li sec:authorize="isAuthenticated()">
         Hello <strong><span sec:authentication="principal.username"></span></strong>
         Login Successful.
+        <span>Go to main <a href="/"
+                                     th:href="@{/mainPage}">Login
+                                here</a></span>
+        </li>
+        <li sec:authorize="isAnonymous()">
+        Welcome. Login <a href="/"
+                                     th:href="@{/login}">Login
+                                here</a>
+        </li>
     </div>
 </div>
 
