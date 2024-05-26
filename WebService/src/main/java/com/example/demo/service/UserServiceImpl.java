@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-//    @Override
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
         if (user == null) {

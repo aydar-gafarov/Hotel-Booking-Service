@@ -1,6 +1,9 @@
 package com.example.demo.dto;
 
+import com.example.demo.entity.HousePhoto;
 import com.example.demo.entity.User;
+
+import java.util.List;
 
 public class HouseDto {
 
@@ -8,8 +11,8 @@ public class HouseDto {
 
     private String price;
 
-    private String filename;
 
+    private List<HousePhoto> photos;
     private User owner;
 
     public User getOwner() {
@@ -20,20 +23,28 @@ public class HouseDto {
         this.owner = owner;
     }
 
-    public HouseDto() {
+    public List<HousePhoto> getPhotos() {
+        return photos;
     }
 
-    public String getOwnerName() {
-        if (owner == null) {
-            return "!null!";
-        }
-        return owner.getEmail();
+    public void setPhotos(List<HousePhoto> photos) {
+        this.photos = photos;
     }
-    public HouseDto(String name, String price, String filename, User owner) {
+
+    public HouseDto() {
+    }
+    //
+//    public String getOwnerName() {
+//        if (owner == null) {
+//            return "!null!";
+//        }
+//        return owner.getFirstName() + " " + owner.getLastName();
+//    }
+    public HouseDto(String name, String price, List<HousePhoto> photos, User owner) {
         this.name = name;
         this.price = price;
-        this.filename = filename;
         this.owner = owner;
+        this.photos = photos;
     }
 
     public String getName() {
@@ -52,11 +63,4 @@ public class HouseDto {
         this.price = price;
     }
 
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
 }

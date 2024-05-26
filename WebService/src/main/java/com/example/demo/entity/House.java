@@ -2,6 +2,9 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "house")
 public class House {
@@ -14,16 +17,42 @@ public class House {
 
     private String price;
 
-    private String filename;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "house")
+    private List<HousePhoto> photos;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    public House(String name, String price, String filename, User owner) {
+//    @Transient
+//    private List<String> photos = new ArrayList<>();
+
+    public List<HousePhoto> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<HousePhoto> photos) {
+        this.photos = photos;
+    }
+
+    //    public List<String> getPhotos() {
+//        return photos;
+//    }
+//
+//    public void setPhotos(List<String> photos) {
+//        this.photos = photos;
+//    }
+
+    public House(String name, String price, User owner) {
         this.name = name;
         this.price = price;
-        this.filename = filename;
+        this.owner = owner;
+    }
+
+    public House(String name, String price, List<HousePhoto> photos, User owner) {
+        this.name = name;
+        this.price = price;
+        this.photos = photos;
         this.owner = owner;
     }
 
@@ -52,14 +81,6 @@ public class House {
 
     public void setPrice(String price) {
         this.price = price;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
     }
 
     public User getOwner() {

@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,6 +35,8 @@ public class HouseController {
 
     @Autowired
     private HouseService houseService;
+
+
 
     @Autowired
     private UserService userService;
@@ -59,16 +62,20 @@ public class HouseController {
 //        return "mainPage";
 //    }
 
-@PostMapping("/mainPage")
-public String add(
-        @AuthenticationPrincipal UserDetails userDetails,
-        @RequestParam String name,
-        @RequestParam String price, Map<String, Object> model) throws IOException {
+
+    @PostMapping("/mainPage")
+    public String add(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam String name,
+            @RequestParam List<MultipartFile> photos,
+            @RequestParam String price, Map<String, Object> model) throws IOException {
         User user = userService.findByEmail(userDetails.getUsername());
-        HouseDto houseDto = new HouseDto(name, price, null,user);
-    houseService.save(houseDto, user);
-    List<House> houses = houseService.getAll();
-    model.put("houses", houses);
-    return "mainPage";
-}
+        House house = new House(name, price, user);
+        houseService.save(house, user, photos);
+        List<House> houses = houseService.getAll();
+        model.put("houses", houses);
+        return "mainPage";
+    }
+
+
 }
