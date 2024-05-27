@@ -2,7 +2,6 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,6 +16,10 @@ public class House {
 
     private String price;
 
+    private String district;
+    private String city;
+    private String address;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "house")
     private List<HousePhoto> photos;
 
@@ -24,8 +27,21 @@ public class House {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-//    @Transient
-//    private List<String> photos = new ArrayList<>();
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
 
     public List<HousePhoto> getPhotos() {
         return photos;
@@ -35,18 +51,21 @@ public class House {
         this.photos = photos;
     }
 
-    //    public List<String> getPhotos() {
-//        return photos;
-//    }
-//
-//    public void setPhotos(List<String> photos) {
-//        this.photos = photos;
-//    }
+    public String getAddress() {
+        return address;
+    }
 
-    public House(String name, String price, User owner) {
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public House(String name, String price, User owner, String district, String city, String address) {
         this.name = name;
         this.price = price;
         this.owner = owner;
+        this.district = district;
+        this.city = city;
+        this.address = address;
     }
 
     public House(String name, String price, List<HousePhoto> photos, User owner) {

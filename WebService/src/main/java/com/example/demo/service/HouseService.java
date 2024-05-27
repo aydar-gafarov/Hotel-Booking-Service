@@ -1,9 +1,7 @@
 package com.example.demo.service;
 
 
-import com.example.demo.dto.HouseDto;
 import com.example.demo.entity.House;
-import com.example.demo.entity.HousePhoto;
 import com.example.demo.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
