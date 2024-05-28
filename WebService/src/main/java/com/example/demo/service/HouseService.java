@@ -11,6 +11,10 @@ public interface HouseService {
 
     House save(House house, User user, List<MultipartFile> photos);
 
+    List <House> filterHouse(String city, String district,
+                             String address, String ownerName,
+                             Integer minPrice, Integer maxPrice);
+
     List<House> getByOwner(Long id);
     String savePhotoOld(MultipartFile file);
 

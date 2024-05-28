@@ -38,6 +38,7 @@ public class User {
     @JoinTable(name = "users_houses")
     private List<House> houses;
 
+
     public User() {
 
     }

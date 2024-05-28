@@ -45,6 +45,44 @@ public class HouseServiceImpl implements HouseService {
     }
 
     @Override
+    public List<House> filterHouse(String city, String district, String address, String ownerName, Integer minPrice, Integer maxPrice) {
+        List<House> filteredHouse = new ArrayList<>();
+        for (House house : houseRepository.findAll()) {
+            if ((minPrice != null && minPrice > house.getPrice()) || (maxPrice != null && house.getPrice() > maxPrice)) {
+                continue;
+            }
+            if (!isEmpty(city) && !house.getCity().equals(city)) {
+                continue;
+            }
+            if (!isEmpty(district) && !house.getDistrict().equals(district)) {
+                continue;
+            }
+            if (!isEmpty(address) && !house.getAddress().equals(address)) {
+                continue;
+            }
+            if (ownerName != null && !ownerName.isEmpty()) {
+                String[] nameParts = ownerName.split("\\s+"); // Разделяем строку по пробелу или пробелам
+                String firstName = nameParts[0]; // Получаем первую подстроку (имя)
+                String lastName = ""; // Пустая фамилия по умолчанию
+                if (nameParts.length > 1) {
+                    lastName = nameParts[1]; // Если есть вторая подстрока, то это фамилия
+                }
+
+                // Проверяем соответствие имени и фамилии владельца дома
+                if (!isEmpty(ownerName) && !house.getOwner().getFirstName().equals(firstName) || !house.getOwner().getLastName().equals(lastName)) {
+                    continue; // Если имена или фамилии не совпадают, пропускаем дом
+                }
+            }
+
+            filteredHouse.add(house);
+        }
+        return filteredHouse;
+    }
+    private boolean isEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
+    @Override
     public List<House> getByOwner(Long id) {
         User owner = user.findById(id);
         return houseRepository.findByOwner(owner);

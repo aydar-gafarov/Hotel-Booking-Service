@@ -11,4 +11,6 @@ import java.util.List;
 @Controller
 public interface HouseRepository extends JpaRepository<House, Long> {
     List<House> findByOwner(User owner);
+
+    House findById(Long id);
 }

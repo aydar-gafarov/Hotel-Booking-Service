@@ -14,7 +14,7 @@ public class House {
 
     private String name;
 
-    private String price;
+    private int price;
 
     private String district;
     private String city;
@@ -59,7 +59,7 @@ public class House {
         this.address = address;
     }
 
-    public House(String name, String price, User owner, String district, String city, String address) {
+    public House(String name, int price, User owner, String district, String city, String address) {
         this.name = name;
         this.price = price;
         this.owner = owner;
@@ -68,7 +68,7 @@ public class House {
         this.address = address;
     }
 
-    public House(String name, String price, List<HousePhoto> photos, User owner) {
+    public House(String name, int price, List<HousePhoto> photos, User owner) {
         this.name = name;
         this.price = price;
         this.photos = photos;
@@ -94,11 +94,11 @@ public class House {
         this.name = name;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

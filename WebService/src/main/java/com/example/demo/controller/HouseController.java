@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,9 +28,22 @@ public class HouseController {
     @Autowired
     private UserService userService;
 
+//    @GetMapping("/mainPage")
+//    public String mainPage(Map<String, Object> model) {
+//        model.put("houses", houseService.getAll());
+//        return "mainPage";
+//    }
+
     @GetMapping("/mainPage")
-    public String mainPage(Map<String, Object> model) {
-        model.put("houses", houseService.getAll());
+    public String mainPage(Model model, @RequestParam(required = false) String city, @RequestParam(required = false) String district, @RequestParam(required = false) String address, @RequestParam(required = false) String ownerName, @RequestParam(required = false) Integer minPrice, @RequestParam(required = false) Integer maxPrice) {
+        model.addAttribute("city", city);
+        model.addAttribute("district", district);
+        model.addAttribute("address", address);
+        model.addAttribute("ownerName", ownerName);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        List<House> filteredHouses = houseService.filterHouse(city, district, address, ownerName, minPrice, maxPrice);
+        model.addAttribute("houses", filteredHouses);
         return "mainPage";
     }
 
@@ -41,7 +55,7 @@ public class HouseController {
             @RequestParam String address,
             @RequestParam String district,
             @RequestParam String city,
-            @RequestParam String price, Map<String, Object> model) throws IOException {
+            @RequestParam int price, Map<String, Object> model) throws IOException {
         User user = userService.findByEmail(userDetails.getUsername());
         House house = new House(name, price, user, district, city, address);
         houseService.save(house, user, photos);
