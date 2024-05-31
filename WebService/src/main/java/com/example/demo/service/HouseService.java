@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
 
+import com.example.demo.calendar.CalendarDate;
 import com.example.demo.entity.House;
 import com.example.demo.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface HouseService {
@@ -17,6 +19,11 @@ public interface HouseService {
 
     List<House> getByOwner(Long id);
     String savePhotoOld(MultipartFile file);
+
+    void addNewBookingDate(House house, String date, User user);
+
+    List<List<CalendarDate>> showCalendar(House house);
+
 
     List<House> getAll();
 

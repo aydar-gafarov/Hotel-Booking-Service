@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,9 +24,19 @@ public class House {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "house")
     private List<HousePhoto> photos;
 
+    @OneToMany(mappedBy = "house", cascade = CascadeType.ALL)
+    private List<Booking> bookings = new ArrayList<>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     private User owner;
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
 
     public String getDistrict() {
         return district;

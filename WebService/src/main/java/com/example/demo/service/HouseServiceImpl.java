@@ -1,9 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.calendar.CalendarDate;
+import com.example.demo.entity.Booking;
 import com.example.demo.entity.House;
 import com.example.demo.entity.HousePhoto;
 import com.example.demo.entity.User;
 import com.example.demo.repository.HouseRepository;
+import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,24 +14,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Service
 public class HouseServiceImpl implements HouseService {
-
     @Autowired
     private HouseRepository houseRepository;
-
     @Autowired
     private UserServiceImpl user;
-
-
     @Value("${upload.path}")
     private String uploadPath;
-
-
+    @Autowired
+    private UserRepository userRepository;
     @Override
     public House save(House house, @AuthenticationPrincipal User user, List<MultipartFile> photos) {
         List<HousePhoto> housePhotos = new ArrayList<>();
@@ -61,16 +62,15 @@ public class HouseServiceImpl implements HouseService {
                 continue;
             }
             if (ownerName != null && !ownerName.isEmpty()) {
-                String[] nameParts = ownerName.split("\\s+"); // Разделяем строку по пробелу или пробелам
-                String firstName = nameParts[0]; // Получаем первую подстроку (имя)
-                String lastName = ""; // Пустая фамилия по умолчанию
+                String[] nameParts = ownerName.split("\\s+");
+                String firstName = nameParts[0];
+                String lastName = "";
                 if (nameParts.length > 1) {
-                    lastName = nameParts[1]; // Если есть вторая подстрока, то это фамилия
+                    lastName = nameParts[1];
                 }
 
-                // Проверяем соответствие имени и фамилии владельца дома
                 if (!isEmpty(ownerName) && !house.getOwner().getFirstName().equals(firstName) || !house.getOwner().getLastName().equals(lastName)) {
-                    continue; // Если имена или фамилии не совпадают, пропускаем дом
+                    continue;
                 }
             }
 
@@ -112,4 +112,66 @@ public class HouseServiceImpl implements HouseService {
         }
         return null;
     }
+
+    @Override
+    public void addNewBookingDate(House house, String date, User user) {
+        if (date != null && !date.isEmpty()) {
+            LocalDate localDate = LocalDate.parse(date);
+            for (Booking booking : house.getBookings()) {
+                if (booking.getDate().equals(localDate)) {
+                    throw new RuntimeException("Date already booked");
+                }
+            }
+            Booking booking = new Booking(localDate, user, house);
+            house.getBookings().add(booking);
+            houseRepository.save(house);
+        }
+    }
+
+    @Override
+    public List<List<CalendarDate>> showCalendar(House house) {
+        List<List<CalendarDate>> calendar = new ArrayList<>();
+
+        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
+        LocalDate endOfMonth = startOfMonth.plusMonths(1).withDayOfMonth(1);
+
+        LocalDate currentDay = startOfMonth;
+        List<CalendarDate> week = new ArrayList<>();
+
+        while (!currentDay.isAfter(endOfMonth)) {
+            boolean isBooked = isDateBooked(house, currentDay);
+            User bookedBy = getBookedBy(house, currentDay);
+            week.add(new CalendarDate(currentDay, isBooked, bookedBy));
+
+            if (currentDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                calendar.add(new ArrayList<>(week));
+                week.clear();
+            }
+
+            currentDay = currentDay.plusDays(1);
+        }
+
+        if (!week.isEmpty()) {
+            calendar.add(week);
+        }
+
+        return calendar;
+    }
+
+    private boolean isDateBooked(House house, LocalDate date) {
+        return house.getBookings().stream()
+                .anyMatch(booking -> booking.getDate().equals(date));
+    }
+
+    private User getBookedBy(House house, LocalDate date) {
+        return house.getBookings().stream()
+                .filter(booking -> booking.getDate().equals(date))
+                .map(Booking::getUser)
+                .findFirst()
+                .orElse(null);
+    }
+
+
+
+
 }

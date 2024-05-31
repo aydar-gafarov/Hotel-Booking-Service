@@ -35,7 +35,12 @@ public class HouseController {
 //    }
 
     @GetMapping("/mainPage")
-    public String mainPage(Model model, @RequestParam(required = false) String city, @RequestParam(required = false) String district, @RequestParam(required = false) String address, @RequestParam(required = false) String ownerName, @RequestParam(required = false) Integer minPrice, @RequestParam(required = false) Integer maxPrice) {
+    public String mainPage(Model model, @RequestParam(required = false) String city,
+                           @RequestParam(required = false) String district,
+                           @RequestParam(required = false) String address,
+                           @RequestParam(required = false) String ownerName,
+                           @RequestParam(required = false) Integer minPrice,
+                           @RequestParam(required = false) Integer maxPrice) {
         model.addAttribute("city", city);
         model.addAttribute("district", district);
         model.addAttribute("address", address);
